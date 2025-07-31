@@ -1,111 +1,106 @@
-#' Summarize a Fitted Mixture Cure Object.
+#' Summarize a fitted mixture cure object
 #'
 #' @description
-#' \code{summary} method for a mixturecure object fit using \code{curegmifs}, \code{cureem}, \code{cv_curegmifs}, or \code{cv_cureem}.
+#' \code{summary} method for a mixturecure object fit using \code{curegmifs},
+#' \code{cureem}, \code{cv_curegmifs}, or \code{cv_cureem}.
 #'
-#' @param object a \code{mixturecure} object resulting from \code{curegmifs}, \code{cureem}, \code{cv_curegmifs}, or \code{cv_cureem}.
+#' @param object a \code{mixturecure} object resulting from \code{curegmifs},
+#' \code{cureem}, \code{cv_curegmifs}, or \code{cv_cureem}.
 #' @param ... other arguments.
 #'
-#' @return prints the following items extracted from the object fit using \code{curegmifs} or \code{cureem}: the step and value that maximizes the log-likelihood; the step and value that minimizes the AIC, modified AIC (mAIC), corrected AIC (cAIC), BIC, modified BIC (mBIC), and extended BIC (EBIC). Returns log-likelihood, AIC, and BIC if the object was fit using \code{cv_curegmifs} or \code{cv_cureem} at the optimal cross-validated values if no FDR control; the number of non-zero incidence and latency variables is returned when cross-validation is used together with FDR control.
+#' @return prints the number of non-zero coefficients from the incidence and
+#' latency portions of the fitted mixture cure model when using the minimum AIC
+#' to select the final model. When fitting a model using \code{curegmifs} or
+#' \code{cureem} the summary function additionally prints results associated
+#' with the following model selection methods: the step and value that maximizes
+#' the log-likelihood; the step and value that minimizes the AIC, modified AIC
+#' (mAIC), corrected AIC (cAIC), BIC, modified BIC (mBIC), and extended BIC
+#' (EBIC). This information can be used to guide the user in the selection of
+#' a final model from the solution path.
 #'
 #' @export
 #'
-#' @seealso \code{\link{curegmifs}}, \code{\link{cureem}}, \code{\link{coef.mixturecure}}, \code{\link{plot.mixturecure}}, \code{\link{predict.mixturecure}}
+#' @seealso \code{\link{curegmifs}}, \code{\link{cureem}},
+#' \code{\link{coef.mixturecure}}, \code{\link{plot.mixturecure}},
+#' \code{\link{predict.mixturecure}}
 #' @keywords methods
 #' @method summary mixturecure
 #'
+#' @srrstats {G1.4} *Software should use [`roxygen2`](https://roxygen2.r-lib.org/) to document all functions.*
+#' @srrstats {RE4.18} *Regression Software may also implement `summary` methods for model objects, and in particular should implement distinct `summary` methods for any cases in which calculation of summary statistics is computationally non-trivial (for example, for bootstrapped estimates of confidence intervals).*
 #' @examples
 #' library(survival)
-#' set.seed(1234)
-#' temp <- generate_cure_data(N = 100, J = 10, nTrue = 10, A = 1.8)
-#' training <- temp$Training
+#' withr::local_seed(1234)
+#' temp <- generate_cure_data(n = 100, j = 10, n_true = 10, a = 1.8)
+#' training <- temp$training
 #' fit <- curegmifs(Surv(Time, Censor) ~ .,
-#'                        data = training, x.latency = training,
-#'                        model = "weibull", thresh = 1e-4, maxit = 2000,
-#'                        epsilon = 0.01, verbose = FALSE)
+#'   data = training, x_latency = training,
+#'   model = "weibull", thresh = 1e-4, maxit = 2000,
+#'   epsilon = 0.01, verbose = FALSE
+#' )
 #' summary(fit)
-summary.mixturecure <-
-  function (object, ...)
-  {
-    if (!(class(object) %in% "mixturecure")) stop("class of object must be mixturecure")
-    if (!object$cv) {
-       if (!is.null(object$x.incidence)) {
-        vars.inc <- apply(object$b_path, 1, function(x) sum(x !=
-                                                              0))
-      }
-      else {
-        vars.inc <- 0
-      }
-      if (!is.null(object$x.latency)) {
-        vars.lat <- apply(object$beta_path, 1, function(x) sum(x !=
-                                                                 0))
-      }
-      else {
-        vars.lat <- 0
-      }
-    }
-    else {
-      if (!is.null(object$x.latency)) {
-        vars.lat <- sum(object$beta != 0)
-      }
-      else {
-        vars.lat <- 0
-      }
-      if (!is.null(object$x.incidence)) {
-        vars.inc <- sum(object$b != 0)
-      }
-      else {
-        vars.inc <- 0
-      }
-    }
-    if (object$model == "weibull") {
-      df <- vars.inc + vars.lat + 3
-    }
-    else if (object$model == "exponential") {
-      df <- vars.inc + vars.lat + 2
-    }
-    else if (object$model == "cox") {
-      df <- vars.inc + vars.lat + 1
-    }
-    if (object$method == "EM")
-      logLik <- object$logLik.inc + object$logLik.lat
-    else logLik <- object$logLik
-    p <- dim(object$x.incidence)[2] + dim(object$x.latency)[2]
-    AIC <- 2 * df - 2 * logLik
-    #cAIC <- AIC+(2*df^2+6*df+4)/(length(object$y)-df-2)
-    cAIC<-AIC+(2*df*(df+1))/(length(object$y)-df-1) # https://www.mathworks.com/help/econ/information-criteria.html
-    mAIC <- (2+2*log(p/.5)) * df - 2 * logLik
-    BIC <- df * (log(length(object$y))) -  2 * logLik
-    mBIC <- df * (log(length(object$y)) + 2*log(p/4)) - 2 * logLik
-    EBIC <- log(length(object$y)) * df + 2*(1-.5)*log(choose(p, df)) - 2 * logLik
-    if (object$cv == FALSE) {
-      model.select.AIC <- which.min(AIC)
-      model.select.cAIC <- which.min(cAIC)
-      model.select.mAIC <- which.min(mAIC)
-      model.select.BIC <- which.min(BIC)
-      model.select.mBIC <- which.min(mBIC)
-      model.select.EBIC <- which.min(EBIC)
-      model.select.logLik = which.max(logLik)
-    }
-    message("Mixture cure model fit using the ", object$method, " algorithm \n")
-    if (object$cv == FALSE) {
-      message("at step    = ", model.select.logLik, " logLik     = ", logLik[model.select.logLik], "\n")
-      message("at step    = ", model.select.AIC, " AIC        = ", AIC[model.select.AIC], "\n")
-      message("at step    = ", model.select.mAIC, " mAIC        = ", mAIC[model.select.mAIC], "\n")
-      message("at step    = ", model.select.cAIC, " cAIC        = ", cAIC[model.select.cAIC], "\n")
-      message("at step    = ", model.select.BIC, " BIC        = ", BIC[model.select.BIC], "\n")
-      message("at step    = ", model.select.mBIC, " mBIC        = ", mBIC[model.select.mBIC], "\n")
-      message("at step    = ", model.select.EBIC, " EBIC        = ", EBIC[model.select.EBIC], "\n")
-      message("\n")
-    }
-    else if (!object$fdr.control) {
-      message("using cross-validation \n")
-      message("logLik     = ", logLik, "\n")
-      message("AIC        = ", AIC, "\n")
-      message("BIC        = ", BIC, "\n")
-      message("\n")
-    } else {
-      message("Number of non-zero incidence covariates: ", sum(object$b!=0), "\n")
-      message("Number of non-zero latency covariates: ", sum(object$beta!=0), "\n")
-    }
+summary.mixturecure <- function(object, ...) {
+  if (!(class(object) %in% "mixturecure")) {
+    stop("class of object must be mixturecure")
   }
+  message("Mixture cure model fit using the ", object$method, " algorithm \n")
+  if (object$cv == FALSE) {
+    select <- select_model(object, model_select = "AIC")
+    model_select_AIC <- which.min(select$AIC)
+    model_select_cAIC <- which.min(select$cAIC)
+    model_select_mAIC <- which.min(select$mAIC)
+    model_select_BIC <- which.min(select$BIC)
+    model_select_mBIC <- which.min(select$mBIC)
+    model_select_EBIC <- which.min(select$EBIC)
+    model_select_logLik <- which.max(select$logLik)
+    message(
+      "Number of non-zero incidence covariates at minimum AIC: ",
+      sum(object$b_path[model_select_AIC,] != 0), "\n"
+    )
+    message(
+      "Number of non-zero latency covariates at minimum AIC: ",
+      sum(object$beta_path[model_select_AIC,] != 0), "\n"
+    )
+  if (object$cv == FALSE) {
+    message("Optimal step for selected information criterion: ", object$method, " algorithm \n")
+    message(
+      "\t at step    = ", model_select_logLik, " logLik     = ",
+      max(select$logLik), "\n"
+    )
+    message(
+      "\t at step    = ", model_select_AIC, " AIC        = ",
+      min(select$AIC), "\n"
+    )
+    message(
+      "\t at step    = ", model_select_mAIC, " mAIC        = ",
+      min(select$mAIC), "\n"
+    )
+    message(
+      "\t at step    = ", model_select_cAIC, " cAIC        = ",
+      min(select$cAIC), "\n"
+    )
+    message(
+      "\t at step    = ", model_select_BIC, " BIC        = ",
+      min(select$BIC), "\n"
+    )
+    message(
+      "\t at step    = ", model_select_mBIC, " mBIC        = ",
+      min(select$mBIC), "\n"
+    )
+    message(
+      "\t at step    = ", model_select_EBIC, " EBIC        = ",
+      min(select$EBIC), "\n"
+    )
+  }
+  } else {
+    message("using cross-validation \n")
+    message(
+      "Number of non-zero incidence covariates: ",
+      sum(object$b != 0), "\n"
+    )
+    message(
+      "Number of non-zero latency covariates: ",
+      sum(object$beta != 0), "\n"
+    )
+  }
+}

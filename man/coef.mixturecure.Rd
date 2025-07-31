@@ -2,35 +2,76 @@
 % Please edit documentation in R/coef.R
 \name{coef.mixturecure}
 \alias{coef.mixturecure}
-\title{Extract model coefficients from a fitted mixture cure object}
+\alias{coefficients}
+\title{Extract model coefficients from a fitted mixturecure object}
 \usage{
-\method{coef}{mixturecure}(object, model.select = "AIC", ...)
+\method{coef}{mixturecure}(object, model_select = "AIC", ...)
 }
 \arguments{
-\item{object}{a \code{mixturecure} object resulting from \code{curegmifs}, \code{cureem}, \code{cv_curegmifs}, or \code{cv_cureem}.}
+\item{object}{a \code{mixturecure} object resulting from \code{curegmifs},
+\code{cureem}, \code{cv_curegmifs}, or \code{cv_cureem}.}
 
-\item{model.select}{for models fit using \code{curegmifs} or \code{cureem} any step along the solution path can be selected. The default is \code{model.select = "AIC"} which calculates the predicted values using the coefficients from the model having the lowest AIC. Other options are \code{model.select = "mAIC"} for the modified AIC,  \code{model.select = "cAIC"} for the corrected AIC, \code{model.select = "BIC"}, \code{model.select = "mBIC"} for the modified BIC, \code{model.select = "EBIC"} for the extended BIC, \code{model.select = "logLik"} for the step that maximizes the log-likelihood, or any numeric value from the solution path. This option has no effect for objects fit using \code{cv_curegmifs} or \code{cv_cureem}.}
+\item{model_select}{either a case-sensitive parameter for models fit using
+\code{curegmifs} or \code{cureem} or any numeric step along the solution path
+can be selected. The default is \code{model_select = "AIC"} which calculates
+the predicted values using the coefficients from the model achieving the
+minimum AIC. The complete list of options are:
+\itemize{
+\item \code{"AIC"} for the minimum AIC (default).
+\item \code{"mAIC"} for the minimum modified AIC.
+\item \code{"cAIC"} for the minimum corrected AIC.
+\item \code{"BIC"}, for the minimum BIC.
+\item \code{"mBIC"} for the minimum modified BIC.
+\item \code{"EBIC"} for the minimum extended BIC.
+\item \code{"logLik"} for the step that maximizes the
+log-likelihood.
+\item \code{n} where n is any numeric value from the
+solution path.
+}
+This option has no effect for objects fit using \code{cv_curegmifs} or
+\code{cv_cureem}.}
 
 \item{...}{other arguments.}
 }
 \value{
-a list of estimated parameters extracted from the model object using the model selection criterion
+\item{rate}{ estimated rate parameter when fitting a Weibull or
+exponential mixture cure model.}
+
+\item{shape}{ estimated shape parameter when fitting a Weibull
+mixture cure model.}
+
+\item{b0}{ estimated intercept for the incidence portion of the
+mixture cure model.}
+
+\item{beta_inc}{ the vector of coefficient estimates for the
+incidence portion of the mixture cure model.}
+
+\item{beta_lat}{ the vector of coefficient estimates for the
+latency portion of the mixture cure model.}
+
+\item{p_uncured}{ a vector of probabilities from the incidence
+portion of the fitted model representing the P(uncured).}
 }
 \description{
-\code{coef.mixturecure} is a generic function which extracts the model coefficients from a fitted mixture cure model object fit using \code{curegmifs}, \code{cureem}, \code{cv_curegmifs}, or \code{cv_cureem}.
+\code{coef.mixturecure} is a generic function which extracts the model
+coefficients from a fitted \code{mixturecure} model object fit using
+\code{curegmifs}, \code{cureem}, \code{cv_curegmifs}, or \code{cv_cureem}.
 }
 \examples{
 library(survival)
-set.seed(1234)
-temp <- generate_cure_data(N = 100, J = 10, nTrue = 10, A = 1.8)
-training <- temp$Training
+withr::local_seed(1234)
+temp <- generate_cure_data(n = 100, j = 10, n_true = 10, a = 1.8)
+training <- temp$training
 fit <- curegmifs(Surv(Time, Censor) ~ .,
-                      data = training, x.latency = training,
-                      model = "weibull", thresh = 1e-4, maxit = 2000, epsilon = 0.01,
-                      verbose = FALSE)
+  data = training, x_latency = training,
+  model = "weibull", thresh = 1e-4, maxit = 2000,
+  epsilon = 0.01, verbose = FALSE
+)
 coef(fit)
 }
 \seealso{
-\code{\link{curegmifs}}, \code{\link{cureem}}, \code{\link{summary.mixturecure}}, \code{\link{plot.mixturecure}}, \code{\link{predict.mixturecure}}
+\code{\link{curegmifs}}, \code{\link{cureem}},
+\code{\link{summary.mixturecure}}, \code{\link{plot.mixturecure}},
+\code{\link{predict.mixturecure}}
 }
 \keyword{methods}

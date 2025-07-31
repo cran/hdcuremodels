@@ -4,39 +4,79 @@
 \alias{plot.mixturecure}
 \title{Plot fitted mixture cure model}
 \usage{
-\method{plot}{mixturecure}(x, type = "trace", xlab = NULL, ylab = NULL, main = NULL, ...)
+\method{plot}{mixturecure}(
+  x,
+  type = c("trace", "AIC", "BIC", "logLik", "cAIC", "mAIC", "mBIC", "EBIC"),
+  xlab = NULL,
+  ylab = NULL,
+  label = FALSE,
+  main = NULL,
+  ...
+)
 }
 \arguments{
-\item{x}{a \code{mixturecure} object resulting from \code{curegmifs} or \code{cureem}, \code{cv_curegmifs} or \code{cv_cureem}.}
+\item{x}{a \code{mixturecure} object resulting from \code{curegmifs} or
+\code{cureem}, \code{cv_curegmifs} or \code{cv_cureem}.}
 
-\item{type}{default is \code{"trace"} which plots the coefficient path for the fitted object. Also available are \code{"AIC"}, \code{"cAIC"}, \code{"mAIC"}, \code{"BIC"}, \code{"mBIC"}, \code{"EBIC"}, and \code{"logLik"}. This option has no effect for objects fit using \code{cv_curegmifs} or \code{cv_cureem}.}
+\item{type}{a case-sensitive parameter indicating what to plot on the y-axis.
+The complete list of options are:
+\itemize{
+\item \code{"trace"} plots the coefficient path for the fitted object
+(default).
+\item \code{"AIC"} plots the AIC against step of model fit.
+\item \code{"mAIC"} plots the modified AIC against step of model fit.
+\item \code{"cAIC"} plots the corrected AIC against step of model fit.
+\item \code{"BIC"}, plots the BIC against step of model fit.
+\item \code{"mBIC"} plots the modified BIC against step of model fit.
+\item \code{"EBIC"} plots the extended BIC against step of model fit.
+\item \code{"logLik"} plots the log-likelihood against step of model fit.
+}
+This option has no effect for objects fit using
+\code{cv_curegmifs} or \code{cv_cureem}.}
 
-\item{xlab}{a default x-axis label will be used which can be changed by specifying a user-defined x-axis label.}
+\item{xlab}{a default x-axis label will be used which can be changed by
+specifying a user-defined x-axis label.}
 
-\item{ylab}{a default y-axis label will be used which can be changed by specifying a user-defined y-axis label.}
+\item{ylab}{a default y-axis label will be used which can be changed by
+specifying a user-defined y-axis label.}
 
-\item{main}{a default main title will be used which can be changed by specifying a user-defined main title. This option is not used for \code{cv_curegmifs} or \code{cv_cureem} fitted objects.}
+\item{label}{logical. If TRUE the variable names will appear in a legend.
+Applicable only when \code{type = "trace"}. Be reminded that this works well
+only for small to moderate numbers of variables. For many predictors, the
+plot will be cluttered. The variables may be more easily identified using
+the \code{coef} function indicating the step of interest.}
+
+\item{main}{a default main title will be used which can be changed by
+specifying a user-defined main title. This option is not used for
+\code{cv_curegmifs} or \code{cv_cureem} fitted objects.}
 
 \item{...}{other arguments.}
 }
 \value{
-this function has no returned value but is called for its side effects
+this function has no returned value but is called for its side
+effects
 }
 \description{
-This function plots either the coefficient path, the AIC, the cAIC, the BIC, or the log-likelihood for a fitted \code{curegmifs} or \code{cureem} object. This function produces a lollipop plot of the coefficient estimates for a fitted \code{cv_curegmifs} or \code{cv_cureem} object.
+This function plots either the coefficient path, the AIC, the cAIC, the BIC,
+or the log-likelihood for a fitted \code{curegmifs} or \code{cureem} object.
+This function produces a lollipop plot of the coefficient estimates for a
+fitted \code{cv_curegmifs} or \code{cv_cureem} object.
 }
 \examples{
 library(survival)
-set.seed(1234)
-temp <- generate_cure_data(N = 100, J = 10, nTrue = 10, A = 1.8)
-training <- temp$Training
+withr::local_seed(1234)
+temp <- generate_cure_data(n = 100, j = 10, n_true = 10, a = 1.8)
+training <- temp$training
 fit <- curegmifs(Surv(Time, Censor) ~ .,
-                   data = training, x.latency = training,
-                   model = "weibull", thresh = 1e-4, maxit = 2000,
-                   epsilon = 0.01, verbose = FALSE)
+  data = training, x_latency = training,
+  model = "weibull", thresh = 1e-4, maxit = 2000,
+  epsilon = 0.01, verbose = FALSE
+)
 plot(fit)
 }
 \seealso{
-\code{\link{curegmifs}}, \code{\link{cureem}}, \code{\link{coef.mixturecure}}, \code{\link{summary.mixturecure}}, \code{\link{predict.mixturecure}}
+\code{\link{curegmifs}}, \code{\link{cureem}},
+\code{\link{coef.mixturecure}}, \code{\link{summary.mixturecure}},
+\code{\link{predict.mixturecure}}
 }
 \keyword{methods}

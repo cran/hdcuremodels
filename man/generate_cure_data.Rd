@@ -5,12 +5,12 @@
 \title{Simulate data under a mixture cure model}
 \usage{
 generate_cure_data(
-  N = 400,
-  J = 500,
+  n = 400,
+  j = 500,
   nonp = 2,
-  train.prop = 3/4,
-  nTrue = 10,
-  A = 1,
+  train_prop = 0.75,
+  n_true = 10,
+  a = 1,
   rho = 0.5,
   itct_mean = 0.5,
   cens_ub = 20,
@@ -21,50 +21,106 @@ generate_cure_data(
 )
 }
 \arguments{
-\item{N}{an integer denoting the total sample size.}
+\item{n}{an integer denoting the total sample size.}
 
-\item{J}{an integer denoting the number of penalized predictors which is the same for both the incidence and latency portions of the model.}
+\item{j}{an integer denoting the number of penalized predictors which is the
+same for both the incidence and latency portions of the model.}
 
-\item{nonp}{an integer less than J denoting the number of unpenalized predictors (which is the same for both the incidence and latency portions of the model.}
+\item{nonp}{an integer denoting the number of unpenalized
+predictors (which is the same for both the incidence and latency portions of
+the model).}
 
-\item{train.prop}{a numeric value in 0, 1 representing the fraction of N to be used in forming the Training dataset.}
+\item{train_prop}{a numeric value in [0, 1) representing the fraction of \code{n}
+to be used in forming the training dataset.}
 
-\item{nTrue}{an integer denoting the number of variables truly associated with the outcome (i.e., the number of covariates with nonzero parameter values) among the penalized predictors.}
+\item{n_true}{an integer less than \code{j} denoting the number of variables truly
+associated with the outcome (i.e., the number of covariates with nonzero
+parameter values) among the penalized predictors.}
 
-\item{A}{a numeric value denoting the effect size which is the same for both the incidence and latency portions of the model.}
+\item{a}{a numeric value denoting the effect size (signal amplitude) which is
+the same for both the incidence and latency portions of the model.}
 
-\item{rho}{a numeric value in 0, 1 representing the correlation between adjacent covariates in the same block. See details below.}
+\item{rho}{a numeric value in [0, 1) representing the correlation between
+adjacent covariates in the same block.}
 
-\item{itct_mean}{a numeric value representing the expectation of the incidence intercept which controls the cure rate.}
+\item{itct_mean}{a numeric value representing the expectation of the
+incidence intercept which controls the cure rate.}
 
-\item{cens_ub}{a numeric value representing the upper bound on the censoring time distribition which follows a uniform distribution on 0, \code{cens_ub}.}
+\item{cens_ub}{a numeric value representing the upper bound on the censoring
+time distribution which follows a uniform distribution on (0, \code{cens_ub}].}
 
-\item{alpha}{a numeric value representing the shape parameter in the Weibull density.}
+\item{alpha}{a numeric value representing the shape parameter in the Weibull
+density.}
 
-\item{lambda}{a numeric value representing the rate parameter in the Weibull density.}
+\item{lambda}{a numeric value representing the rate parameter in the Weibull
+density.}
 
-\item{same_signs}{logical, if TRUE the incidence and latency coefficients have the same signs.}
+\item{same_signs}{logical, if TRUE the incidence and latency coefficients
+have the same signs.}
 
-\item{model}{type of regression model to use for the latency portion of mixture cure model. Can be "weibull", "GG", "Gompertz", "nonparametric", or "GG_baseline".}
+\item{model}{type of regression model to use for the latency portion of
+mixture cure model. Can be one of the following:
+\itemize{
+\item \code{"weibull"} to generate times from a Weibull distribution.
+\item \code{"GG"} to generate times from a generalized gamma distribution.
+\item \code{"Gompertz"} to generate times from a Gomertz distribution.
+\item \code{"nonparametric"} to generate times non-parametrically.
+\item  \code{"GG_baseline"} to generate times from a generalized gamma
+baseline distribution.
+}}
 }
 \value{
-\item{Training}{Training data.frame which includes Time, Censor, and covariates.}
+\item{training}{training data.frame which includes Time, Censor, and
+covariates. Variables prefixed with \code{"U"} indicates unpenalized
+covariates and is equal to the value
+passed to \code{nonp} (default is 2). Variables prefixed with \code{"X"}
+indicates penalized covariates and is equal to the value passed to
+\code{j}.
+}
 
-\item{Testing}{Testing data.frame which includes Time, Censor, and covariates.}
+\item{testing}{testing data.frame which includes Time, Censor, and
+covariates. Variables prefixed with \code{"U"} indicates unpenalized
+covariates and is equal to the value
+passed to \code{nonp} (default is 2). Variables prefixed with \code{"X"}
+indicates penalized covariates and is equal to the value passed to
+\code{j}.
+}
 
-\item{parameters}{A list including: the indices of true incidence signals (\code{nonzero_b}), indices of true latency signals (\code{nonzero_beta}), unpenalized incidence parameter values (\code{b_u}), unpenalized latency parameter values (\code{beta_u}), parameter values for the true incidence signals among penalized covariates (\code{b_p_nz}), parameter values for the true latency signals among penalized covariates (\code{beta_p_nz}), parameter value for the incidence intercept (\code{itct})}
+\item{parameters}{a list including: the indices of true incidence
+signals (\code{nonzero_b}), indices of true latency signals
+(\code{nonzero_beta}), unpenalized incidence parameter values (\code{b_u}),
+unpenalized latency parameter values (\code{beta_u}), parameter values for
+the true incidence signals among penalized covariates (\code{b_p_nz}),
+parameter values for the true latency signals among penalized covariates
+(\code{beta_p_nz}), parameter value for the incidence intercept
+(\code{itct})}
 }
 \description{
-Simulate data under a mixture cure model
+Simulate data under a mixture cure model.
 }
 \examples{
 library(survival)
-set.seed(1234)
-data <- generate_cure_data(N = 200, J = 50, nTrue = 10, A = 1.8, rho = 0.2)
-training <- data$Training
-testing <- data$Testing
-fit <- cureem(Surv(Time, Censor) ~ ., data = training,
-              x.latency = training, model = "cox", penalty = "lasso",
-              lambda.inc = 0.05, lambda.lat = 0.05,
-              gamma.inc = 6, gamma.lat = 10)
+withr::local_seed(1234)
+# This dataset has 2 penalized features associated with the outcome,
+# 3 penalized features not associated with the outcome (noise features), and 1
+# unpenalized noise feature.
+data <- generate_cure_data(n = 1000, j = 5, n_true = 2, nonp = 1, a = 2)
+# Extract the training data
+training <- data$training
+# Extract the testing data
+testing <- data$testing
+# To identify the features truly associated with incidence
+names(training)[grep("^X", names(training))][data$parameters$nonzero_b]
+# To identify the features truly associated with latency
+names(training)[grep("^X", names(training))][data$parameters$nonzero_beta]
+# Fit the model to the training data
+fitem <- cureem(Surv(Time, Censor) ~ ., data = training,
+  x_latency = training)
+# Examine the estimated coefficients at the (default) minimum AIC
+coef(fitem)
+# As the penalty increases, the coefficients for the noise variables shrink
+# to or remain at zero, while the truly associated features have coefficient
+# paths that depart from zero. This shows the model's ability to distinguish
+# signal from noise.
+plot(fitem, label = TRUE)
 }

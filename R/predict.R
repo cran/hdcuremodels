@@ -1,214 +1,147 @@
-#' Predicted probabilities for susceptibles, linear predictor for latency, and risk class for latency for mixture cure fit
+#' Predicted probabilities for susceptibles, linear predictor for latency, and
+#' risk class for latency for mixture cure fit
 #'
 #' @description
-#' This function returns a list the includes the predicted probabilities for susceptibles as well as the linear predictor for the latency distribution and a dichotomous risk for latency for a \code{curegmifs}, \code{cureem}, \code{cv_curegmifs} or \code{cv_cureem} fitted object.
+#' This function returns a list that includes the predicted probabilities for
+#' susceptibles as well as the linear predictor for the latency distribution
+#' and a dichotomous risk for latency for a \code{curegmifs}, \code{cureem},
+#' \code{cv_curegmifs} or \code{cv_cureem} fitted object.
 #'
-#' @param object a \code{mixturecure} object resulting from \code{curegmifs}, \code{cureem}, \code{cv_curegmifs}, \code{cv_cureem}.
-#' @param newdata an optional data.frame that minimally includes the incidence and/or latency variables to use for predicting the response. If omitted, the training data are used.
-#' @param model.select for models fit using \code{curegmifs} or \code{cureem} any step along the solution path can be selected. The default is \code{model.select = "AIC"} which calculates the predicted values using the coefficients from the model having the lowest AIC. Other options are \code{model.select = "mAIC"} for the modified AIC,  \code{model.select = "cAIC"} for the corrected AIC, \code{model.select = "BIC"}, \code{model.select = "mBIC"} for the modified BIC, \code{model.select = "EBIC"} for the extended BIC, \code{model.select = "logLik"} for the step that maximizes the log-likelihood, or any numeric value from the solution path. This option has no effect for objects fit using \code{cv_curegmifs} or \code{cv_cureem}.
+#' @param object a \code{mixturecure} object resulting from \code{curegmifs},
+#' \code{cureem}, \code{cv_curegmifs}, or \code{cv_cureem}.
+#' @param newdata an optional data.frame that minimally includes the incidence
+#' and/or latency variables to use for predicting the response. If omitted, the
+#' training data are used.
+#' @param model_select either a case-sensitive parameter for models fit using
+#' \code{curegmifs} or \code{cureem} or any numeric step along the solution path
+#' can be selected. The default is \code{model_select = "AIC"} which calculates
+#' the predicted values using the coefficients from the model achieving the
+#' minimum AIC. The complete list of options are:
+#' \itemize{
+#'     \item \code{"AIC"} for the minimum AIC (default).
+#'     \item \code{"mAIC"} for the minimum modified AIC.
+#'     \item \code{"cAIC"} for the minimum corrected AIC.
+#'     \item \code{"BIC"}, for the minimum BIC.
+#'     \item \code{"mBIC"} for the minimum modified BIC.
+#'     \item \code{"EBIC"} for the minimum extended BIC.
+#'     \item \code{"logLik"} for the step that maximizes the
+#' log-likelihood.
+#'     \item \code{n} where n is any numeric value from the
+#'     solution path.
+#'   }
+#' This option has no effect for objects fit using \code{cv_curegmifs} or
+#' \code{cv_cureem}.
 #' @param ... other arguments
 #'
-#' @return \item{p.uncured}{ a vector of probabilities from the incidence portion of the fitted model representing the P(uncured).}
-#' @return \item{linear.latency}{ a vector for the linear predictor from the latency portion of the model.}
-#' @return \item{latency.risk}{ a dichotomous class representing low (below the median) versus high risk for the latency portion of the model.}
+#' @return \item{p_uncured}{ a vector of probabilities from the incidence
+#' portion of the fitted model representing the P(uncured).}
+#' @return \item{linear_latency}{ a vector for the linear predictor from the
+#' latency portion of the model.}
+#' @return \item{latency_risk}{ a dichotomous class representing low (below the
+#' median) versus high risk for the latency portion of the model.}
 #'
-#' @seealso \code{\link{curegmifs}}, \code{\link{cureem}}, \code{\link{coef.mixturecure}}, \code{\link{summary.mixturecure}}, \code{\link{plot.mixturecure}}
+#' @seealso \code{\link{curegmifs}}, \code{\link{cureem}},
+#' \code{\link{coef.mixturecure}}, \code{\link{summary.mixturecure}},
+#' \code{\link{plot.mixturecure}}
 #' @keywords methods
 #' @method predict mixturecure
 #'
+#' @srrstats {G1.4} *Software should use [`roxygen2`](https://roxygen2.r-lib.org/) to document all functions.*
+#' @srrstats {G5.5} *Correctness tests should be run with a fixed random seed*
+#' @srrstats {RE4.9} *Modelled values of response variables.*
 #' @export
 #'
 #' @examples
 #' library(survival)
-#' set.seed(1234)
-#' temp <- generate_cure_data(N = 100, J = 10, nTrue = 10, A = 1.8)
-#' training <- temp$Training
+#' withr::local_seed(1234)
+#' temp <- generate_cure_data(n = 100, j = 10, n_true = 10, a = 1.8)
+#' training <- temp$training
 #' fit <- curegmifs(Surv(Time, Censor) ~ .,
-#'                   data = training, x.latency = training,
-#'                   model = "weibull", thresh = 1e-4, maxit = 2000,
-#'                   epsilon = 0.01, verbose = FALSE)
-#' predict.train <- predict(fit)
-#' names(predict.train)
-#' testing <- temp$Testing
-#' predict.test <- predict(fit, newdata = testing)
-predict.mixturecure <- function (object, newdata, model.select = "AIC", ...) {
-  if (!("mixturecure" %in% class(object))) stop("class of object must be mixturecure")
-  noData <- (missing(newdata) || is.null(newdata))
-  if (noData) {
-    y <- object$y
-    x.inc <- object$x.incidence
-    x.lat <- object$x.latency
+#'   data = training, x_latency = training,
+#'   model = "weibull", thresh = 1e-4, maxit = 2000,
+#'   epsilon = 0.01, verbose = FALSE
+#' )
+#' predict_train <- predict(fit)
+#' names(predict_train)
+#' testing <- temp$testing
+#' predict_test <- predict(fit, newdata = testing)
+predict.mixturecure <- function(object, newdata, model_select = "AIC", ...) {
+  if (!("mixturecure" %in% class(object))) {
+    stop("Error: class of object must be mixturecure")
+  }
+  no_data <- (missing(newdata) || is.null(newdata))
+  if (no_data) {
+    x_inc <- object$x_incidence
+    x_lat <- object$x_latency
   } else {
-    #if (!is.null(newx.incidence))
-    #    if (newx.incidence == ~1) {
-    #        m <- model.frame(newx.incidence)
-    #    }
-    #    else {
-    x.inc <- as.matrix(model.frame(as.formula(paste(" ~ ", paste(colnames(object$x.incidence), collapse= "+"))), newdata))
-    #    }
-    #if (!is.null(newx.latency))
-    #    if (newx.latency == ~1) {
-    #        m <- model.frame(newx.latency)
-    #    }
-    #    else {
-    x.lat <- as.matrix(model.frame(as.formula(paste(" ~ ", paste(colnames(object$x.latency), collapse= "+"))), newdata))
-    #    }
-    #if (is.null(newx.incidence) & is.null(newx.latency)) {
-    #    x.inc <- object$x.incidence
-    #    x.lat <- object$x.latency
-    #}
+    x_inc <- as.matrix(model.frame(as.formula(paste(
+      " ~ ",
+      paste(colnames(object$x_incidence), collapse = "+")
+    )), newdata))
+    x_lat <- as.matrix(model.frame(as.formula(paste(
+      " ~ ",
+      paste(colnames(object$x_latency), collapse = "+")
+    )), newdata))
   }
-  n <- max(dim(x.inc)[1], dim(x.lat)[1])
-  if (!is.null(x.inc) & identical(x.inc, object$x.incidence)) {
+  # Scale x_inc if scale is TRUE; match to train if test data used
+  if (!is.null(x_inc) && identical(x_inc, object$x_incidence)) {
     if (object$scale) {
-      sd <- apply(x.inc, 2, sd)
-      for (i in 1:dim(x.inc)[2]) {
-        if (sd[i] == 0) {
-          x.inc[, i] <- scale(x.inc[, i], center = TRUE,
-                              scale = FALSE)
-        }
-        else {
-          x.inc[, i] <- scale(x.inc[, i], center = TRUE,
-                              scale = TRUE)
-        }
-      }
+      x_inc <- self_scale(x_inc, object$scale)
     }
+  } else if (!is.null(x_inc) && object$scale) {
+    newx <- rbind(object$x_incidence, x_inc)
+    newx <- self_scale(newx, object$scale)
+    x_inc <- as.matrix(newx[-(seq_len(dim(object$x_incidence)[1])), ,
+                          drop = FALSE
+    ])
   }
-  else if (!is.null(x.inc) && object$scale) {
-    newx <- rbind(object$x.incidence, x.inc)
-    sd <- apply(newx, 2, sd)
-    for (i in 1:dim(newx)[2]) {
-      if (sd[i] == 0) {
-        newx[, i] <- scale(newx[, i], center = TRUE,
-                           scale = FALSE)
-      }
-      else {
-        newx[, i] <- scale(newx[, i], center = TRUE,
-                           scale = TRUE)
-      }
-    }
-    x.inc <- as.matrix(newx[-(1:dim(object$x.incidence)[1]),,drop=FALSE])
-  }
-  if (!is.null(x.lat) & identical(x.lat, object$x.latency)) {
+  # Scale x_lat if scale is TRUE; match to train if test data used
+  if (!is.null(x_lat) && identical(x_lat, object$x_latency)) {
     if (object$scale) {
-      sd <- apply(x.lat, 2, sd)
-      for (i in 1:dim(x.lat)[2]) {
-        if (sd[i] == 0) {
-          x.lat[, i] <- scale(x.lat[, i], center = TRUE,
-                              scale = FALSE)
-        }
-        else {
-          x.lat[, i] <- scale(x.lat[, i], center = TRUE,
-                              scale = TRUE)
-        }
-      }
+      x_lat <- self_scale(x_lat, object$scale)
     }
-  }
-  else if (!is.null(x.lat) && object$scale) {
-    newx <- rbind(object$x.latency, x.lat)
-    sd <- apply(newx, 2, sd)
-    for (i in 1:dim(newx)[2]) {
-      if (sd[i] == 0) {
-        newx[, i] <- scale(newx[, i], center = TRUE,
-                           scale = FALSE)
-      }
-      else {
-        newx[, i] <- scale(newx[, i], center = TRUE,
-                           scale = TRUE)
-      }
-    }
-    x.lat <- as.matrix(newx[-(1:dim(object$x.latency)[1]),,drop=FALSE])
+  } else if (!is.null(x_lat) && object$scale) {
+    newx <- rbind(object$x_latency, x_lat)
+    newx <- self_scale(newx, object$scale)
+    x_lat <- as.matrix(newx[-(seq_len(dim(object$x_latency)[1])), , drop = FALSE])
   }
   if (!object$cv) {
-    if (is.character(model.select)) {
-      model.select <- c("AIC", "BIC", "logLik", "cAIC", "mAIC", "mBIC", "EBIC")[pmatch(model.select,
-                                                               c("AIC", "BIC", "logLik", "cAIC", "mAIC", "mBIC", "EBIC"))]
-      if (any(!model.select%in%c("AIC", "BIC", "logLik", "cAIC", "mAIC", "mBIC", "EBIC")))
-        stop("model.select must be either 'AIC', 'BIC', 'logLik', 'cAIC', 'mAIC', 'mBIC', or 'EBIC' ")
-      if (object$method == "EM") {
-        logLik <- object$logLik.inc + object$logLik.lat
+    if (!is.numeric(model_select))
+      model_select <- select_model(object, model_select)$select
+    if (is.null(x_inc)) {
+      p_hat <- 1 / (1 + exp(-object$b0_path[model_select]))
+    } else {
+      p_hat <- as.numeric(1 / (1 + exp(-object$b0_path[model_select] -
+        x_inc %*%
+        t(object$b_path[model_select, ,
+          drop = FALSE]))))
+    }
+    if (is.null(x_lat)) {
+      w_beta <- rep(0, dim(x_inc)[1])
+    } else {
+      w_beta <- as.numeric(x_lat %*% t(object$beta_path[model_select, ,
+        drop = FALSE]))
+      latency <- ifelse(w_beta < 0, "low risk", "high risk")
+    }
+    output <- list(p_uncured = p_hat, linear_latency = w_beta,
+      latency_risk = latency)
+    } else {
+      if (is.null(x_inc)) {
+        p_hat <- 1 / (1 + exp(-object$b0))
       } else {
-        logLik <- object$logLik
+        p_hat <- 1 / (1 + exp(-object$b0 - x_inc %*% matrix(object$b,
+        ncol = 1)))
       }
-      if (!is.null(object$x.incidence)) {
-        vars.inc <- apply(object$b_path, 1, function(x) sum(x !=  0))
+      if (is.null(x_lat)) {
+        w_beta <- rep(0, dim(x_inc)[1])
       } else {
-        vars.inc <- 0
+        w_beta <- as.numeric(x_lat %*% matrix(object$beta,
+        ncol = 1))
+        latency <- ifelse(w_beta < 0, "low risk", "high risk")
       }
-      if (!is.null(object$x.latency)) {
-        vars.lat <- apply(object$beta_path, 1, function(x) sum(x != 0))
-      } else {
-        vars.lat <- 0
-      }
-      if (object$model == "weibull") {
-        df <- vars.inc + vars.lat + 3
-      }
-      else if (object$model == "exponential") {
-        df <- vars.inc + vars.lat + 2
-      }
-      else if (object$model == "cox") {
-        df <- vars.inc + vars.lat + 1
-      }
-      p <- dim(object$x.incidence)[2] + dim(object$x.latency)[2]
-      AIC <- 2 * df - 2 * logLik
-      #cAIC <- AIC+(2*df^2+6*df+4)/(length(object$y)-df-2)
-      cAIC<-AIC+(2*df*(df+1))/(length(object$y)-df-1) # https://www.mathworks.com/help/econ/information-criteria.html
-      mAIC <- (2+2*log(p/.5)) * df - 2 * logLik
-      BIC <- df * (log(length(object$y))) -  2 * logLik
-      mBIC <- df * (log(length(object$y)) + 2*log(p/4)) - 2 * logLik
-      EBIC <- log(length(object$y)) * df + 2*(1-.5)*log(choose(p, df)) - 2 * logLik
-      if (model.select == "AIC") {
-        model.select = which.min(AIC)
-      }
-      else if (model.select == "BIC") {
-        model.select = which.min(BIC)
-      }
-      else if (model.select == "mAIC") {
-        model.select = which.min(mAIC)
-      }
-      else if (model.select == "mBIC") {
-        model.select = which.min(mBIC)
-      }
-      else if (model.select == "EBIC") {
-        model.select = which.min(EBIC)
-      }
-      else if (model.select == "cAIC") {
-        model.select = which.min(cAIC)
-      }
-      else if (model.select == "logLik") {
-        model.select = which.max(logLik)
-      }
+      output <- list(
+      p_uncured = as.numeric(p_hat), linear_latency = w_beta,
+      latency_risk = latency)
     }
-    if (is.null(x.inc))
-      p_hat = 1/(1 + exp(-object$b0_path[model.select]))
-    else p_hat = as.numeric(1/(1 + exp(-object$b0_path[model.select] -
-                                         x.inc %*% t(object$b_path[model.select, , drop = FALSE]))))
-    if (is.null(x.lat)) {
-      W_beta = rep(0, dim(x.inc)[1])
-    }
-    else {
-      W_beta <- as.numeric(x.lat %*% t(object$beta_path[model.select,
-                                                        , drop = FALSE]))
-      latency <- ifelse(W_beta < 0, "low risk", "high risk")
-    }
-    output <- list(p.uncured = p_hat, linear.latency = W_beta,
-                   latency.risk = latency)
-  }
-  else {
-    if (is.null(x.inc))
-      p_hat = 1/(1 + exp(-object$b0))
-    else p_hat = 1/(1 + exp(-object$b0 - x.inc %*% matrix(object$b,
-                                                          ncol = 1)))
-    if (is.null(x.lat)) {
-      W_beta = rep(0, dim(x.inc)[1])
-    }
-    else {
-      W_beta <- as.numeric(x.lat %*% matrix(object$beta,
-                                            ncol = 1))
-      latency <- ifelse(W_beta < 0, "low risk", "high risk")
-    }
-    output <- list(p.uncured = as.numeric(p_hat), linear.latency = W_beta,
-                   latency.risk = latency)
-  }
   output
 }
