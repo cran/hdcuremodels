@@ -14,6 +14,7 @@ data <- generate_cure_data(n = 200, j = 10, n_true = 5, a = 1.8, rho = 0.2)
 training <- data$training
 testing <- data$testing
 head(training)
+head(data$training_y)
 
 ## -----------------------------------------------------------------------------
 data$parameters
