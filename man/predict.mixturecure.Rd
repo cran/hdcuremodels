@@ -21,17 +21,17 @@ can be selected. The default is \code{model_select = "AIC"} which calculates
 the predicted values using the coefficients from the model achieving the
 minimum AIC. The complete list of options are:
 \itemize{
-\item \code{"AIC"} for the minimum AIC (default).
-\item \code{"mAIC"} for the minimum modified AIC.
-\item \code{"cAIC"} for the minimum corrected AIC.
-\item \code{"BIC"}, for the minimum BIC.
-\item \code{"mBIC"} for the minimum modified BIC.
-\item \code{"EBIC"} for the minimum extended BIC.
-\item \code{"logLik"} for the step that maximizes the
+    \item \code{"AIC"} for the minimum AIC (default).
+    \item \code{"mAIC"} for the minimum modified AIC.
+    \item \code{"cAIC"} for the minimum corrected AIC.
+    \item \code{"BIC"}, for the minimum BIC.
+    \item \code{"mBIC"} for the minimum modified BIC.
+    \item \code{"EBIC"} for the minimum extended BIC.
+    \item \code{"logLik"} for the step that maximizes the
 log-likelihood.
-\item \code{n} where n is any numeric value from the
-solution path.
-}
+    \item \code{n} where n is any numeric value from the
+    solution path.
+  }
 This option has no effect for objects fit using \code{cv_curegmifs} or
 \code{cv_cureem}.}
 

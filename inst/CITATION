@@ -2,6 +2,17 @@ citHeader("To cite hdcuremodels in publications use: ")
 
 bibentry(
   bibtype  = "Article",
+  title    = "Fitting high-dimensional mixture cure models using the hdcuremodels R package",
+  author   = "Kellie J. Archer, Han Fu",
+  journal  = "Computer Methods and Programs in Biomedicine",
+  year     = 2026,
+  volume   = 276,
+  pages    = 109212,
+  url      = "doi: 10.1016/j.cmpb.2025.109212"
+)
+
+bibentry(
+  bibtype  = "Article",
   title    = "Identifying long-term survivors and those at higher or lower risk of relapse among patients with cytogenetically normal acute myeloid leukemia using a high-dimensional mixture cure model",
   author   = "Kellie J. Archer, Han Fu, Krzysztof Mrozek, Deedra Nicolet, Alice S. Mims, Geoffrey L. Uy, Wendy Stock, John C. Byrd, Wolfgang Hiddemann, Jan Braess, Karsten Spiekermann, Klaus H. Metzeler, Tobias Herold, Ann-Kathrin Eisfeld",
   journal  = "Journal of Hematology & Oncology",

@@ -7,7 +7,7 @@
 \method{formula}{mixturecure}(x, ...)
 }
 \arguments{
-\item{x}{an object from class \code{mixturecure}.}
+\item{x}{an object from class `mixturecure`.}
 
 \item{...}{other arguments.}
 }
@@ -16,7 +16,7 @@ a formula representing the incidence and variables for the latency
 portion of the model
 }
 \description{
-Extract the model formula for \code{mixturecure} object
+Extract the model formula for `mixturecure` object
 }
 \examples{
 library(survival)

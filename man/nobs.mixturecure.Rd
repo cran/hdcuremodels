@@ -7,7 +7,7 @@
 \method{nobs}{mixturecure}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \code{mixturecure}.}
+\item{object}{An object of class `mixturecure`.}
 
 \item{...}{other arguments.}
 }
@@ -15,7 +15,7 @@
 number of subjects in the dataset.
 }
 \description{
-Number of observations in fitted \code{mixturecure} object.
+Number of observations in fitted `mixturecure` object.
 }
 \examples{
 library(survival)

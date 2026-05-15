@@ -262,9 +262,9 @@ cureem <- function(formula, data, subset, x_latency = NULL,
   if (is.null(penalty_factor_lat)) {
     penalty_factor_lat <- rep(1, ncol(x_lat))
   }
-  if (any(!c(penalty_factor_inc, penalty_factor_inc) %in% c(0, 1))) {
+  if (any(!c(penalty_factor_inc, penalty_factor_lat) %in% c(0, 1))) {
     stop("Error: Penalty factors specified in penalty_factor_inc and
-         penalty_factor_inc can only include 0 or 1")
+         penalty_factor_lat can only include 0 or 1")
   }
   if (any(c(lambda_inc, lambda_lat, gamma_inc, gamma_lat) <= 0)) {
     stop("Error: Penalty pamameters lambda and gamma should be positive")

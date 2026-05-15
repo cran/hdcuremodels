@@ -21,6 +21,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Kellie J. Archer \email{archer.43@osu.edu} (\href{https://orcid.org/0000-0003-1555-5781}{ORCID})
   \item Han Fu
 }
 

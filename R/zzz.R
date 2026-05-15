@@ -133,7 +133,7 @@ cox_l1 <-
         fit_lat <- glmnet::glmnet(x = cbind(W_u, W_p)[nz_pir,
         ], y = Surv(time = time[nz_pir], event = delta[nz_pir]),
         family = "cox", offset = log(pir[nz_pir]), penalty.factor = pen_fac_lat,
-        lambda = mu_lat, standardize = FALSE)
+        lambda = mu_lat, standardize = FALSE, cox.ties = "breslow")
         coef_lat <- coef(fit_lat)
         if (is.null(W_u)) {
           beta_p <- pmax(-CAP, pmin(CAP, as.numeric(coef_lat)))

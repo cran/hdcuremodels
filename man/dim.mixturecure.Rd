@@ -7,7 +7,7 @@
 \method{dim}{mixturecure}(x)
 }
 \arguments{
-\item{x}{An object of class \code{mixturecure}.}
+\item{x}{An object of class `mixturecure`.}
 }
 \value{
 \item{nobs}{ number of subjects in the dataset.}

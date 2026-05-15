@@ -21,16 +21,16 @@
 \item{type}{a case-sensitive parameter indicating what to plot on the y-axis.
 The complete list of options are:
 \itemize{
-\item \code{"trace"} plots the coefficient path for the fitted object
-(default).
-\item \code{"AIC"} plots the AIC against step of model fit.
-\item \code{"mAIC"} plots the modified AIC against step of model fit.
-\item \code{"cAIC"} plots the corrected AIC against step of model fit.
-\item \code{"BIC"}, plots the BIC against step of model fit.
-\item \code{"mBIC"} plots the modified BIC against step of model fit.
-\item \code{"EBIC"} plots the extended BIC against step of model fit.
-\item \code{"logLik"} plots the log-likelihood against step of model fit.
-}
+    \item \code{"trace"} plots the coefficient path for the fitted object
+    (default).
+    \item \code{"AIC"} plots the AIC against step of model fit.
+    \item \code{"mAIC"} plots the modified AIC against step of model fit.
+    \item \code{"cAIC"} plots the corrected AIC against step of model fit.
+    \item \code{"BIC"}, plots the BIC against step of model fit.
+    \item \code{"mBIC"} plots the modified BIC against step of model fit.
+    \item \code{"EBIC"} plots the extended BIC against step of model fit.
+    \item \code{"logLik"} plots the log-likelihood against step of model fit.
+  }
 This option has no effect for objects fit using
 \code{cv_curegmifs} or \code{cv_cureem}.}
 

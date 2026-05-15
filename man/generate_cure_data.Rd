@@ -30,10 +30,10 @@ same for both the incidence and latency portions of the model.}
 predictors (which is the same for both the incidence and latency portions of
 the model).}
 
-\item{train_prop}{a numeric value in [0, 1) representing the fraction of \code{n}
+\item{train_prop}{a numeric value in [0, 1) representing the fraction of `n`
 to be used in forming the training dataset.}
 
-\item{n_true}{an integer less than \code{j} denoting the number of variables truly
+\item{n_true}{an integer less than `j` denoting the number of variables truly
 associated with the outcome (i.e., the number of covariates with nonzero
 parameter values) among the penalized predictors.}
 

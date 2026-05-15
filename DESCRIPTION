@@ -1,7 +1,7 @@
 Package: hdcuremodels
 Title: High-Dimensional Cure Models
-Version: 0.0.6
-Date: 2025-12-01
+Version: 0.0.7
+Date: 2026-05-13
 Authors@R: 
     c(person("Han", "Fu", role = "aut"), person(c("Kellie J."), "Archer", email=
     "archer.43@osu.edu", role = c("aut","cre"), comment = c(ORCID="0000-0003-1555-5781")), 
@@ -14,15 +14,18 @@ Depends: R (>= 4.2.0)
 Imports: doParallel, flexsurv, flexsurvcure, foreach, ggplot2, ggpubr,
         glmnet, knockoff, mvnfast, parallel, plyr, methods, survival,
         withr
-RoxygenNote: 7.3.3
+Config/Roxygen: list(markdown = TRUE, roclets = c("namespace", "rd",
+        "srr::srr_stats_roclet"))
+Config/Remotes: ropensci-review-tools/srr
 Suggests: knitr, Rdsdp, rmarkdown, roxygen2, testthat (>= 3.0.0)
 VignetteBuilder: knitr
 LazyData: true
 URL: https://github.com/ropensci/hdcuremodels
 BugReports: https://github.com/ropensci/hdcuremodels/issues
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
 NeedsCompilation: no
-Packaged: 2025-12-03 17:10:39 UTC; archer.43
+Packaged: 2026-05-15 12:31:06 UTC; archer.43
 Author: Han Fu [aut],
   Kellie J. Archer [aut, cre] (ORCID:
     <https://orcid.org/0000-0003-1555-5781>),
@@ -30,4 +33,4 @@ Author: Han Fu [aut],
   Panagiotis Papastamoulis [rev] (Reviewed the package for ROpenSci)
 Maintainer: Kellie J. Archer <archer.43@osu.edu>
 Repository: CRAN
-Date/Publication: 2025-12-03 17:50:02 UTC
+Date/Publication: 2026-05-15 16:10:02 UTC

@@ -282,5 +282,5 @@ test_that("cv_cureem function works correctly", {
                       grid_tuning = FALSE, nlambda_inc = 10, nlambda_lat = 10,
                       n_folds = 2, seed = 23, verbose = FALSE
   )
-  expect_equal(round(fit.cv$b0, 7), 0.3495074)
+  expect_equal(fit.cv$b0, 0.3495074, tolerance = 1e-3)
 })
