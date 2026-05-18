@@ -46,9 +46,9 @@
 #' @srrstats {G1.4} *Software should use [`roxygen2`](https://roxygen2.r-lib.org/) to document all functions.*
 #' @srrstats {G5.2b} *Explicit tests should demonstrate conditions which trigger every one of those messages, and should compare the result with expected values.*
 #' @srrstats {RE4.2} *Model coefficients (via `coef()` / `coefficients()`)*
-#' @seealso \code{\link{curegmifs}}, \code{\link{cureem}},
-#' \code{\link{summary.mixturecure}}, \code{\link{plot.mixturecure}},
-#' \code{\link{predict.mixturecure}}
+#' @seealso \code{\link[hdcuremodels]{curegmifs}}, \code{\link[hdcuremodels]{cureem}},
+#' \code{\link[hdcuremodels]{summary.mixturecure}}, \code{\link[hdcuremodels]{plot.mixturecure}},
+#' \code{\link[hdcuremodels]{predict.mixturecure}}
 #' @export
 #' @keywords methods
 #' @method coef mixturecure

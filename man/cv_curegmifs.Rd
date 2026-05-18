@@ -188,17 +188,19 @@ solution path. When FDR controlled variable selection is used, the model-X
 knockoffs method is applied and indices of selected variables are returned.
 }
 \examples{
+\dontrun{
 library(survival)
 withr::local_seed(123)
-temp <- generate_cure_data(n = 100, j = 15, n_true = 3, a = 1.8, rho = 0.2)
+temp <- generate_cure_data(n = 100, j = 15, n_true = 3, a = 1.8, rho = 0.1)
 training <- temp$training
 
 fit.cv <- cv_curegmifs(Surv(Time, Censor) ~ .,
   data = training,
   x_latency = training, fdr_control = FALSE,
-  maxit = 450, epsilon = 0.01, n_folds = 2,
+  maxit = 450, epsilon = 0.01, n_folds = 2, thresh = 1e-4,
   seed = 23, verbose = TRUE
 )
+}
 }
 \references{
 Fu, H., Nicolet, D., Mrozek, K., Stone, R. M., Eisfeld, A. K.,

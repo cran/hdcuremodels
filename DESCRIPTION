@@ -1,7 +1,7 @@
 Package: hdcuremodels
 Title: High-Dimensional Cure Models
-Version: 0.0.7
-Date: 2026-05-13
+Version: 0.0.8
+Date: 2026-05-17
 Authors@R: 
     c(person("Han", "Fu", role = "aut"), person(c("Kellie J."), "Archer", email=
     "archer.43@osu.edu", role = c("aut","cre"), comment = c(ORCID="0000-0003-1555-5781")), 
@@ -25,7 +25,7 @@ BugReports: https://github.com/ropensci/hdcuremodels/issues
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.0.0
 NeedsCompilation: no
-Packaged: 2026-05-15 12:31:06 UTC; archer.43
+Packaged: 2026-05-18 00:05:49 UTC; archer.43
 Author: Han Fu [aut],
   Kellie J. Archer [aut, cre] (ORCID:
     <https://orcid.org/0000-0003-1555-5781>),
@@ -33,4 +33,4 @@ Author: Han Fu [aut],
   Panagiotis Papastamoulis [rev] (Reviewed the package for ROpenSci)
 Maintainer: Kellie J. Archer <archer.43@osu.edu>
 Repository: CRAN
-Date/Publication: 2026-05-15 16:10:02 UTC
+Date/Publication: 2026-05-18 07:00:15 UTC

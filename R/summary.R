@@ -20,9 +20,9 @@
 #'
 #' @export
 #'
-#' @seealso \code{\link{curegmifs}}, \code{\link{cureem}},
-#' \code{\link{coef.mixturecure}}, \code{\link{plot.mixturecure}},
-#' \code{\link{predict.mixturecure}}
+#' @seealso \code{\link[hdcuremodels]{curegmifs}}, \code{\link[hdcuremodels]{cureem}},
+#' \code{\link[hdcuremodels]{coef.mixturecure}}, \code{\link[hdcuremodels]{plot.mixturecure}},
+#' \code{\link[hdcuremodels]{predict.mixturecure}}
 #' @keywords methods
 #' @method summary mixturecure
 #'

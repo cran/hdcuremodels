@@ -190,7 +190,7 @@ high-dimensional mixture cure model. \emph{Journal of Hematology & Oncology},
 \bold{17}:28.
 }
 \seealso{
-\code{\link{cv_cureem}}
+\code{\link[hdcuremodels]{cv_cureem}}
 }
 \keyword{models}
 \keyword{regression}

@@ -67,6 +67,6 @@ Application to breast cancer data. \emph{Journal of Biopharmaceutical
 Statistics}, \bold{27}:6, 918--932.
 }
 \seealso{
-\code{\link{auc_mcm}}
+\code{\link[hdcuremodels]{auc_mcm}}
 }
 \keyword{univar}

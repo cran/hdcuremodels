@@ -139,7 +139,7 @@
 #' @srrstats {RE4.4} *The specification of the model, generally as a formula (via `formula()`)*
 #' @srrstats {RE4.7} *Where appropriate, convergence statistics*
 #' @srrstats {RE4.8} *Response variables, and associated "metadata" where applicable.*
-#' @seealso \code{\link{cv_curegmifs}}
+#' @seealso \code{\link[hdcuremodels]{cv_curegmifs}}
 #' @export
 #'
 #' @import stats

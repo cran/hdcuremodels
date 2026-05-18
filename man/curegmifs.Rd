@@ -170,7 +170,7 @@ stagewise regression and the monotone lasso. \emph{Electron J Stat},
 \bold{1}:1--29.
 }
 \seealso{
-\code{\link{cv_curegmifs}}
+\code{\link[hdcuremodels]{cv_curegmifs}}
 }
 \keyword{models}
 \keyword{regression}

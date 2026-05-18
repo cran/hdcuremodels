@@ -48,7 +48,7 @@
 #' @srrstats {G5.2b} *Explicit tests should demonstrate conditions which trigger every one of those messages, and should compare the result with expected values.*
 #' @srrstats {G5.5} *Correctness tests should be run with a fixed random seed*
 #' @srrstats {G5.6a} *Parameter recovery tests should generally be expected to succeed within a defined tolerance rather than recovering exact values.*
-#' @seealso \code{\link{concordance_mcm}}
+#' @seealso \code{\link[hdcuremodels]{concordance_mcm}}
 #'
 #' @keywords univar
 #' @examples

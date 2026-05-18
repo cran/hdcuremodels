@@ -68,6 +68,6 @@ an application to breast cancer data. \emph{Pharmaceutical Statistics},
 \bold{13}:357--363.
 }
 \seealso{
-\code{\link{concordance_mcm}}
+\code{\link[hdcuremodels]{concordance_mcm}}
 }
 \keyword{univar}

@@ -178,18 +178,20 @@
 #' @srrstats {RE4.8} *Response variables, and associated "metadata" where applicable.*
 #'
 #' @examples
+#' \dontrun{
 #' library(survival)
 #' withr::local_seed(123)
-#' temp <- generate_cure_data(n = 100, j = 15, n_true = 3, a = 1.8, rho = 0.2)
+#' temp <- generate_cure_data(n = 100, j = 15, n_true = 3, a = 1.8, rho = 0.1)
 #' training <- temp$training
 #'
 # Fit a penalized Weibull MCM using GMIFS selecting parameters using 2-fold CV
 #' fit.cv <- cv_curegmifs(Surv(Time, Censor) ~ .,
 #'   data = training,
 #'   x_latency = training, fdr_control = FALSE,
-#'   maxit = 450, epsilon = 0.01, n_folds = 2,
+#'   maxit = 450, epsilon = 0.01, n_folds = 2, thresh = 1e-4,
 #'   seed = 23, verbose = TRUE
 #' )
+#' }
 cv_curegmifs <- function(formula, data, subset, x_latency = NULL,
                          model = c("weibull", "exponential"),
                          penalty_factor_inc = NULL, penalty_factor_lat = NULL,

@@ -20,9 +20,9 @@
 #' only \code{terms} on the right hand side of the equation are included (i.e.,
 #' variables are included in the incidence portion of the model).
 #'
-#' @seealso \code{\link{curegmifs}}, \code{\link{cureem}},
-#' \code{\link{coef.mixturecure}}, \code{\link{summary.mixturecure}},
-#' \code{\link{plot.mixturecure}}, \code{\link{predict.mixturecure}}
+#' @seealso \code{\link[hdcuremodels]{curegmifs}}, \code{\link[hdcuremodels]{cureem}},
+#' \code{\link[hdcuremodels]{coef.mixturecure}}, \code{\link[hdcuremodels]{summary.mixturecure}},
+#' \code{\link[hdcuremodels]{plot.mixturecure}}, \code{\link[hdcuremodels]{predict.mixturecure}}
 #'
 #' @return prints coefficient estimates for the incidence portion of the model
 #' and if included, prints the coefficient estimates for the latency portion of

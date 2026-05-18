@@ -69,8 +69,8 @@ testing <- temp$testing
 predict_test <- predict(fit, newdata = testing)
 }
 \seealso{
-\code{\link{curegmifs}}, \code{\link{cureem}},
-\code{\link{coef.mixturecure}}, \code{\link{summary.mixturecure}},
-\code{\link{plot.mixturecure}}
+\code{\link[hdcuremodels]{curegmifs}}, \code{\link[hdcuremodels]{cureem}},
+\code{\link[hdcuremodels]{coef.mixturecure}}, \code{\link[hdcuremodels]{summary.mixturecure}},
+\code{\link[hdcuremodels]{plot.mixturecure}}
 }
 \keyword{methods}

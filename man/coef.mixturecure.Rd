@@ -70,8 +70,8 @@ fit <- curegmifs(Surv(Time, Censor) ~ .,
 coef(fit)
 }
 \seealso{
-\code{\link{curegmifs}}, \code{\link{cureem}},
-\code{\link{summary.mixturecure}}, \code{\link{plot.mixturecure}},
-\code{\link{predict.mixturecure}}
+\code{\link[hdcuremodels]{curegmifs}}, \code{\link[hdcuremodels]{cureem}},
+\code{\link[hdcuremodels]{summary.mixturecure}}, \code{\link[hdcuremodels]{plot.mixturecure}},
+\code{\link[hdcuremodels]{predict.mixturecure}}
 }
 \keyword{methods}

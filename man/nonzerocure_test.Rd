@@ -52,7 +52,7 @@ Maller, R. A. and Zhou, X. (1996) \emph{Survival Analysis with
 Long-Term Survivors}. John Wiley & Sons.
 }
 \seealso{
-\code{\link[survival]{survfit}}, \code{\link{cure_estimate}},
-\code{\link{sufficient_fu_test}}
+\code{\link[survival]{survfit}}, \code{\link[hdcuremodels]{cure_estimate}},
+\code{\link[hdcuremodels]{sufficient_fu_test}}
 }
 \keyword{htest}

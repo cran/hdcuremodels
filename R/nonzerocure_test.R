@@ -38,8 +38,8 @@
 #' @srrstats {G5.9a} *Adding trivial noise (for example, at the scale of `.Machine$double.eps`) to data does not meaningfully change results*
 #' @srrstats {G5.9b} *Running under different random seeds or initial conditions does not meaningfully change results*
 #' @srrstats {RE4.5} *Numbers of observations submitted to model (via `nobs()`)*
-#' @seealso \code{\link[survival]{survfit}}, \code{\link{cure_estimate}},
-#' \code{\link{sufficient_fu_test}}
+#' @seealso \code{\link[survival]{survfit}}, \code{\link[hdcuremodels]{cure_estimate}},
+#' \code{\link[hdcuremodels]{sufficient_fu_test}}
 #'
 #' @import survival
 #' @import stats

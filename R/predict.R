@@ -40,9 +40,9 @@
 #' @return \item{latency_risk}{ a dichotomous class representing low (below the
 #' median) versus high risk for the latency portion of the model.}
 #'
-#' @seealso \code{\link{curegmifs}}, \code{\link{cureem}},
-#' \code{\link{coef.mixturecure}}, \code{\link{summary.mixturecure}},
-#' \code{\link{plot.mixturecure}}
+#' @seealso \code{\link[hdcuremodels]{curegmifs}}, \code{\link[hdcuremodels]{cureem}},
+#' \code{\link[hdcuremodels]{coef.mixturecure}}, \code{\link[hdcuremodels]{summary.mixturecure}},
+#' \code{\link[hdcuremodels]{plot.mixturecure}}
 #' @keywords methods
 #' @method predict mixturecure
 #'
