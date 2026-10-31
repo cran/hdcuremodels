@@ -227,15 +227,13 @@ generate_cure_data <- function(n = 400, j = 500, nonp = 2, train_prop = 0.75,
       x_u = x_u[tr_i, , drop=FALSE], x_p = x_p[tr_i, , drop = FALSE],
       w_u = w_u[tr_i, , drop = FALSE],
       w_p = w_p[tr_i, , drop = FALSE], time = time[tr_i], y = y[tr_i],
-      delta = delta[tr_i],
-      y = y[tr_i]
+      delta = delta[tr_i]
     )
     te_data <- list(
      x_u = x_u[te_i, , drop = FALSE], x_p = x_p[te_i, , drop = FALSE],
      w_u = w_u[te_i, , drop = FALSE],
      w_p = w_p[te_i, , drop = FALSE], time = time[te_i], y = y[te_i],
-     delta = delta[te_i],
-     y = y[tr_i]
+     delta = delta[te_i]
     )
    training <- data.frame(
       Time = tr_data$time, Censor = tr_data$delta,

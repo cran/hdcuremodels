@@ -100,6 +100,7 @@ cox_l1 <-
       pi_x <- 1/(1 + exp(-b_x))
       numerator <- pi_x[delta == 0] * survprob[delta == 0]
       pir[delta == 0] <- numerator/(1 - pi_x[delta == 0] + numerator)
+      pir <- pmax(1e-08, pmin(1 - 1e-08, pir))
       if (!conv1) {
         fit_inc <- glmnet::glmnet(x = cbind(X_u, X_p), y = cbind(1 -
                                                                   pir, pir), family = "binomial", penalty.factor = pen_fac_inc,
@@ -158,15 +159,43 @@ cox_l1 <-
         accum_hazard <- sapply(time, function(x) sum((d_j/denom)[uniq_event_time <=
                                                                   x]))
         surv_baseline <- exp(-accum_hazard)
+  # uniroot patch in R 4.3.1 strictly enforces boundary conditions
+  # code sometimes broke due to how this specific function handles values near zero 
+  #      if (length(tail_ind) > 0) {
+  #        wtail_alpha <- uniroot(function(a) sum(-exp_beta_w_p *
+  #                                                max(accum_hazard) * log(time/T_n0) * (time/T_n0)^a +
+  #                                                delta/a + delta * log(time/T_n0)), c(0.01,
+  #                                                                                     10), extendInt = "yes")$root
+  #        wtail_lambda <- (max(accum_hazard))^(1/wtail_alpha)/T_n0
+  #        surv_baseline[tail_ind] <- exp(-(wtail_lambda *
+  #                                          time[tail_ind])^wtail_alpha)
+  #      }
+  # Fix #1: add a small constant to the time numerator to avoid -Inf 
         if (length(tail_ind) > 0) {
           wtail_alpha <- uniroot(function(a) sum(-exp_beta_w_p *
-                                                  max(accum_hazard) * log(time/T_n0) * (time/T_n0)^a +
-                                                  delta/a + delta * log(time/T_n0)), c(0.01,
-                                                                                       10), extendInt = "yes")$root
-          wtail_lambda <- (max(accum_hazard))^(1/wtail_alpha)/T_n0
-          surv_baseline[tail_ind] <- exp(-(wtail_lambda *
-                                            time[tail_ind])^wtail_alpha)
+                max(accum_hazard) * log((time + 1e-8)/T_n0) * (time/T_n0)^a +
+                        delta/a + delta * log((time + 1e-8)/T_n0)), c(0.01, 10), extendInt = "yes")$root
+                wtail_lambda <- (max(accum_hazard))^(1/wtail_alpha)/T_n0
+                surv_baseline[tail_ind] <- exp(-(wtail_lambda *
+                                                  time[tail_ind])^wtail_alpha)
         }
+# uniroot patch in R 4.3.1 strictly enforces boundary conditions 
+# A different approach if above doesn't work       
+#         if (length(tail_ind) > 0) {
+#          # Define the score function
+#          score_func <- function(a) {
+#            sum(-exp_beta_w_p * max(accum_hazard) * log(time/T_n0) * (time/T_n0)^a + 
+#                  delta/a + delta * log(time/T_n0))
+#          }
+#          
+#          # Minimize the squared score function to find the root
+#          # A wide interval like c(1e-4, 50) safely contains almost all plausible Weibull shape parameters
+#          # but previous uniroot tried to force estimates in [0.01, 10]
+#         wtail_alpha <- optimize(function(a) score_func(a)^2, interval = c(1e-04, 50))$minimum
+#          
+#          wtail_lambda <- (max(accum_hazard))^(1/wtail_alpha)/T_n0
+#          surv_baseline[tail_ind] <- exp(-(wtail_lambda * time[tail_ind])^wtail_alpha)
+#        }
         survprob <- surv_baseline^exp(beta_w)
         llp2_1 <- sum(log(hazard[delta == 1]) + beta_w[delta ==
                                                         1]) - sum(exp_beta_w_p * accum_hazard) - N *
@@ -289,6 +318,7 @@ cox_mcp_scad <-
       numerator <- pi_x[delta == 0] * survprob[delta == 0]
       pir[delta == 0] = numerator/pmax(1e-50, 1 - pi_x[delta ==
                                                          0] + numerator)
+      pir <- pmax(1e-08, pmin(1 - 1e-08, pir))
       if (!conv1) {
         for (l in 1:J) {
           bl <- b_p[l]
@@ -344,16 +374,30 @@ cox_mcp_scad <-
         accum_hazard <- sapply(time, function(x) sum((d_j/denom)[uniq_event_time <=
                                                                   x]))
         surv_baseline <- exp(-accum_hazard)
+        #if (length(tail_ind) > 0) {
+        #  tmp <- try(wtail_alpha <- uniroot(function(a) sum(-exp_beta_w_p *
+        #                                                      max(accum_hazard) * log(time/T_n0) * (time/T_n0)^a +
+        #                                                      delta/a + delta * log(time/T_n0)), c(0.01,
+        #                                                                                           10), extendInt = "yes")$root, silent = TRUE)
+        #  if (!inherits(tmp, "try-error")) {
+        #    wtail_lambda <- (max(accum_hazard))^(1/wtail_alpha)/T_n0
+        #    surv_baseline[tail_ind] <- exp(-(wtail_lambda *
+        #                                      time[tail_ind])^wtail_alpha)
+        #  }
+        #}
         if (length(tail_ind) > 0) {
-          tmp <- try(wtail_alpha <- uniroot(function(a) sum(-exp_beta_w_p *
-                                                              max(accum_hazard) * log(time/T_n0) * (time/T_n0)^a +
-                                                              delta/a + delta * log(time/T_n0)), c(0.01,
-                                                                                                   10), extendInt = "yes")$root, silent = TRUE)
-          if (!inherits(tmp, "try-error")) {
-            wtail_lambda <- (max(accum_hazard))^(1/wtail_alpha)/T_n0
-            surv_baseline[tail_ind] <- exp(-(wtail_lambda *
-                                              time[tail_ind])^wtail_alpha)
+          # Define the score function
+          score_func <- function(a) {
+            sum(-exp_beta_w_p * max(accum_hazard) * log(time/T_n0) * (time/T_n0)^a + 
+                  delta/a + delta * log(time/T_n0))
           }
+          
+          # Minimize the squared score function to find the root
+          # A wide interval like c(1e-4, 50) safely contains almost all plausible Weibull shape parameters
+          wtail_alpha <- optimize(function(a) score_func(a)^2, interval = c(1e-04, 50))$minimum
+          
+          wtail_lambda <- (max(accum_hazard))^(1/wtail_alpha)/T_n0
+          surv_baseline[tail_ind] <- exp(-(wtail_lambda * time[tail_ind])^wtail_alpha)
         }
         survprob <- surv_baseline^exp(pmin(CAP, beta_w))
         pen <- ifelse(penalty == "MCP", mcp_penalty(beta_p,

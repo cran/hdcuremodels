@@ -58,8 +58,18 @@ nonzerocure_test <- function(object, reps = 1000, seed = NULL, plot = FALSE,
   if (!(c("survfit") %in% class(object))) {
     stop("Error: object must be a survfit object")
   }
-  # Surv(Time, Censor)
-  Y <- Surv(object$time, object$n.event)
+  
+  call_info <- object$call
+  # Get the data.frame 
+  df <- eval(object$call$data, envir = environment(object$call$formula) %||% 
+               parent.frame())
+  # Convert main call to formula, get terms, and drop the response (to form X
+  # and Z matrices)
+  main_formula <- as.formula(object$call$formula)
+  # Create the model frame using the formula and data
+  mf <- model.frame(main_formula, data = df, na.action = na.omit)
+  # Extract the evaluated Surv object
+  Y <- model.response(mf)
   n <- length(Y)
   if (is.null(object$strata)) {
     exp_model <- survival::survreg(Y ~ 1,
